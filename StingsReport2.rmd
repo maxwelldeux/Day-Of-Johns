@@ -1,0 +1,145 @@
+---
+title: "National Johns Suppression Initiative - Stings Data Analysis"
+author: "Marian Hatcher and Matthew Borneman"
+date: "December 14, 2016"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Background
+![](njsi.png)
+
+Under the leadership of Sheriff Dart, Cook County (IL) Sheriff\'s Office has organized twelve \"National Johns Suppression Initiative\" operations focused on sex buyers. The most recent operation lasted approximately one month, from July 1st to August 7th.  40 law enforcement agencies in 22 states simultaneously conducted sting activities on the streets, in hotels, in brothels, via the internet, and elsewhere. This report summarizes the data and identifies trends.
+
+## Arrest Variables
+
+Across the jurisdictions included in this report, a total of `r sum(stings$Total.Johns.Arrested)` arrests were made. Several descriptive variables relating to the arrests were collected at the time the arrest data were collected. This section provides a summary of these arrest variables that were collected. Note that because complete data were not available for each arrest, percentages below are based on the available data.
+
+#### *Arrest Venue*
+
+```{r include=FALSE}
+venuestats <- matrix(c(rep(NA,4)),nrow = 4,ncol = 1)
+row.names(venuestats) <- c("Hotel/Motel", "Street", "Other", "Total")
+colnames(venuestats) <-"Percent"
+nvenuehotel <- sum(stings$Hotel.Motel.Reversal, na.rm = T) + sum(stings$Internet.Reversal, na.rm = T)
+nvenuestreet <- sum(stings$Street.Reversal, na.rm = T)
+nvenueother <- sum(stings$Other, na.rm = T)
+nvenue <- sum(nvenuehotel, nvenuestreet, nvenueother)
+venuestats[1,1] <- round(100*(nvenuehotel/nvenue), digits = 2)
+venuestats[2,1] <- round(100*(nvenuestreet/nvenue), digits = 2)
+venuestats[3,1] <- round(100*(nvenueother/nvenue), digits = 2)
+venuestats[4,1] <- nvenue
+```
+
+A total of `r nvenue` arrestees had their arrest venue reported. For those arrestees with venue data, the following table reports the percentage of arrestees from each venue.
+
+```{r comment=""}
+venuestats
+if (nvenue > 0) {
+  pie(venuestats[1:3,1], labels = row.names(venuestats), col=rainbow(4))
+}
+```
+
+## Demographic Variables
+
+Several demographic variables were collected along with the arrest data. This section provides a summary of the demographic variables collected. Note that because complete data were not available for each arrest, percentages below are based on the available data.
+
+#### *Age*
+
+```{r include=FALSE}
+agestats <- matrix(c(rep(NA,7)),nrow = 7,ncol = 1)
+row.names(agestats) <- c("Under 18", "18 to 30", "31 to 40", "41 to 50", "51 to 60", "Over 60", "Total")
+colnames(agestats) <-"Percent"
+nage <- sum(stings$Under.18, na.rm = T) + sum(stings$X18.30, na.rm = T) + sum(stings$X31.40, na.rm = T) + sum(stings$X41.50, na.rm = T) + sum(stings$X51.60, na.rm = T) + sum(stings$X60., na.rm = T)
+agestats[1,1] <- round(100*(sum(stings$Under.18, na.rm = T)/nage), digits = 2)
+agestats[2,1] <- round(100*(sum(stings$X18.30, na.rm = T)/nage), digits = 2)
+agestats[3,1] <- round(100*(sum(stings$X31.40, na.rm = T)/nage), digits = 2)
+agestats[4,1] <- round(100*(sum(stings$X41.50, na.rm = T)/nage), digits = 2)
+agestats[5,1] <- round(100*(sum(stings$X51.60, na.rm = T)/nage), digits = 2)
+agestats[6,1] <- round(100*(sum(stings$X60., na.rm = T)/nage), digits = 2)
+agestats[7,1] <- nage
+```
+
+A total of `r nage` arrestees had their age reported. For those arrestees with age data, the following table and graph reports the percentage of arrestees in each age group.
+
+```{r comment=""}
+agestats
+if (nage > 0) {
+  pie(agestats[1:6,1], labels = row.names(agestats), col=rainbow(6))
+}
+```
+
+#### *Education*
+
+```{r include=FALSE}
+edstats <- matrix(c(rep(NA,5)),nrow = 5,ncol = 1)
+row.names(edstats) <- c("Less than High School Diploma", "High School Diploma/GED", "College Degree", "Graduate Degree", "Total")
+colnames(edstats) <-"Percent"
+neducation <- sum(stings$Less.than.High.School, na.rm = T) + sum(stings$Highschool, na.rm = T) + sum(stings$College, na.rm = T) + sum(stings$Graduate..School, na.rm = T)
+edstats[1,1] <- round(100*(sum(stings$Less.than.High.School, na.rm = T)/neducation), digits = 2)
+edstats[2,1] <- round(100*(sum(stings$Highschool, na.rm = T)/neducation), digits = 2)
+edstats[3,1] <- round(100*(sum(stings$College, na.rm = T)/neducation), digits = 2)
+edstats[4,1] <- round(100*(sum(stings$Graduate..School, na.rm = T)/neducation), digits = 2)
+edstats[5,1] <- neducation
+```
+
+A total of `r neducation` arrestees had their educational level reported. For those arrestees with education data, the following table reports the percentage of arrestees in each educational group.
+
+```{r comment=""}
+edstats
+if (neducation > 0) {
+  pie(edstats[1:4,1], labels = row.names(edstats), col=rainbow(4))
+}
+```
+
+#### *Race*
+
+```{r include=FALSE}
+racestats <- matrix(c(rep(NA,6)),nrow = 6,ncol = 1)
+row.names(racestats) <- c("African American", "Asian", "Caucasian", "Hispanic", "Other", "Total")
+colnames(racestats) <-"Percent"
+nrace <- sum(stings$African.American, na.rm = T) + sum(stings$Asian, na.rm = T) + sum(stings$Caucasian, na.rm = T) + sum(stings$Hispanic, na.rm = T) + sum(stings$Other.Race, na.rm = T)
+racestats[1,1] <- round(100*(sum(stings$African.American, na.rm = T)/nrace), digits = 2)
+racestats[2,1] <- round(100*(sum(stings$Asian, na.rm = T)/nrace), digits = 2)
+racestats[3,1] <- round(100*(sum(stings$Caucasian, na.rm = T)/nrace), digits = 2)
+racestats[4,1] <- round(100*(sum(stings$Hispanic, na.rm = T)/nrace), digits = 2)
+racestats[5,1] <- round(100*(sum(stings$Other.Race, na.rm = T)/nrace), digits = 2)
+racestats[6,1] <- nrace
+```
+
+A total of `r nrace` arrestees had their ethnic group reported. For those arrestees with ethnic group data, the following table reports the percentage of arrestees in each ethnic group.
+
+```{r comment=""}
+racestats
+if (nrace > 0) {
+  pie(racestats[1:5,1], labels = row.names(racestats), col=rainbow(5))
+}
+```
+
+#### *Marital Status*
+
+```{r include=FALSE}
+marriedstats <- matrix(c(rep(NA,6)),nrow = 6,ncol = 1)
+row.names(marriedstats) <- c("Single", "In a Relationship", "Married", "Separated", "Divorced", "Total")
+colnames(marriedstats) <-"Percent"
+nmarriage <- sum(stings$Single, na.rm = T) + sum(stings$In.A.Relationship, na.rm = T) + sum(stings$Married, na.rm = T) + sum(stings$Separated, na.rm = T) + sum(stings$Divorced, na.rm = T)
+marriedstats[1,1] <- round(100*(sum(stings$Single, na.rm = T)/nmarriage), digits = 2)
+marriedstats[2,1] <- round(100*(sum(stings$In.A.Relationship, na.rm = T)/nmarriage), digits = 2)
+marriedstats[3,1] <- round(100*(sum(stings$Married, na.rm = T)/nmarriage), digits = 2)
+marriedstats[4,1] <- round(100*(sum(stings$Separated, na.rm = T)/nmarriage), digits = 2)
+marriedstats[5,1] <- round(100*(sum(stings$Divorced, na.rm = T)/nmarriage), digits = 2)
+marriedstats[6,1] <- nmarriage
+```
+
+A total of `r nmarriage` arrestees had their marital status reported. For those arrestees with marital status data, the following table reports the percentage of arrestees with each marital status.
+
+```{r comment=""}
+marriedstats
+if (nmarriage > 0) {
+  pie(marriedstats[1:5,1], labels = row.names(marriedstats), col=rainbow(5))
+}
+```
+
